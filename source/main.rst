@@ -69,32 +69,46 @@ Python语法
 在进入语法部分之前，我们先简单说说Python的特点，让大家对Python有一个感性的了解。
 
 
-解释型语言
-    C/C++语言在运行前都需要经过编译器编译成目标平台的可执行程序。
-    运行时直接加载可执行程序到内存，并执行。
+编译型和解释型语言
+    **编译型语言** 是针对特定平台（操作系统）将某种高级语言源代码，“翻译”成可被该平台软硬件执行的机器指令(操作码和操作数），并包装成该平台所能识别的可执行程序的格式。这种“翻译”只做一次，以后程序运行都不需要再“翻译”。
+    (比如C/C++)
 
-    不同平台对可执行程序的格式要求不同，提供的系统调用也不一样。
-    这个可执行程序
+    **解释型语言** 则是在程序运行过程中由解释器逐句解释为特定平台的机器指令并立即执行。(比如Python/Ruby)
 
+    因为解释型语言在执行前有所谓的“翻译”，所以性能要通常低于编译型语言，为改善解释型语言效率发展出了 **即时编译技术(JIT)**。
+    它在程序执行前首先有编译器编译成字节码，执行过程中再由特定平台上的虚拟机将字节码转译为可以直接运行的机器指令。(比如JAVA/C#/Pypy)
 
 胶水语言
-    起初有人将Python称为胶水语言(glue language)。
-    意思指Python可以轻易地与其它语言交互，以连接各个组件。
-    最常用的就是Python调用C/C++的链接库。
+    起初有人将Python称为胶水语言(glue language)。原因是Python提供与其他很多语言交互的功能。
+    程序员可以轻松的使用Python连接项目中各个组件。
 
+    最常用的就是Python调用C/C++的链接库。
 
 多平台支持
     Python可以像Java那样同一份代码运行在不同的平台(Platform)上。官方解释器支持Windows/Linux/Mac/iOS/AIX/Solaris等。
     这个特性曾经被Java拿来做宣传，并帮助Java迅速吸引了大批程序员。
 
+    不同平台对可执行程序的格式要求不同，提供的系统调用也不一样。
     所谓多平台支持，实际是依靠多平台的Python解释器实现的。
     在Python源码与系统调用/库函数之间增加了一层解释器，隔离底层对Python源码的影响。
 
+动态语言/静态语言
+    首先这个概念不是一个明确的严格性的定义。
 
-动态语言与动态类型语言
 
+强类型/弱类型/静态类型/动态类型
+    这些概念也不是一个明确的严格的定义。
+    
+    知乎上有一个很好的 `讨论 <https://www.zhihu.com/question/19918532>`_ ，大家可以参考一下。
 
+    强类型是指程序不会出现因变量类型而引起的应在设计阶段禁止的行为。弱类型则相反。
+    比如C语言在运行时可能会出现一些由于强制类型转换而引起的缓冲区溢出。这种行为C语言本身无法避免，需要靠程序设计去弥补。
+    所以C是弱类型语言。
 
+    静态类型则是指在编译阶段拒绝所有类型相关的不合理行为。
+    动态类型则是在运行阶段。
+
+    Python是一个强类型，动态类型语言。
 
 
 交互式编程
@@ -177,7 +191,7 @@ Python使用“#”注释单行语句，用法类似C语言的“//”。
 
 Python使用缩进来描述嵌套，在编写Python代码时，请使用带有空格/Tab提示的编辑器，防止此类问题带来的功能错误。
 
-PEP8规定使用4个空格作为每级缩进，其他空格数和Tab虽然可以被编译器识别，但不符合Python规范。
+`PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ 规定使用4个空格作为每级缩进，其他空格数和Tab虽然可以被编译器识别，但不符合Python规范。
 支持其他空格数和Tab仅仅是因为兼容一些古老的代码和个别不智能的编辑器。
 
 请注意，空格与Tab混用会解释器会报错(TabError)。
@@ -321,7 +335,6 @@ bytes 对象还可以通过其他几种方式来创建：
 变量的命名规则
 ~~~~~~~~~~~~~~~~
 
-
 前文提到，Python的语法与C语言比较接近，那有没有类似C语言的指针呢？
 很高兴的告诉我大家，Python里没有指针，变量的申请与释放也都是解释器自动完成的。
 C语言中经常遇到的内存非法问题，在Python里基本不存在。
@@ -375,7 +388,10 @@ Python的运算符基本与C语言一致，需要注意的是下方逻辑运算�
 字符串操作
 ==========
 
-Python中对字符串的处理是非常灵活的。
+Python内置str类提供了 大小写/子串重复次数/编码变换/子串查找/格式化/字符类型判断/字符串拼接/子串替换/分割 等诸多功能。对字符串的处理是非常灵活的。
+
+使用时请参考Python手册- `class str <https://docs.python.org/zh-cn/3/library/stdtypes.html?highlight=str#str>`_ .
+我们这里介绍一些常用功能。
 
 1.可以用“+”运算符将两个字符串连接到一起：
 
@@ -458,11 +474,47 @@ Python中对字符串的处理是非常灵活的。
 
     print(len(a))
 
-Python内置str类提供了 大小写/子串重复次数/编码变换/子串查找/格式化/字符类型判断/字符串拼接/子串替换/分割等诸多功能。使用时请参考Python手册- `class str <https://docs.python.org/zh-cn/3/library/stdtypes.html?highlight=str#str>`_ .
 
 8.字符串格式化
 
+str类提供了format函数支持字符串格式化。
+::
 
+    a = "{} wish {} have a {} day".format("I", "you", "nice")
+    b = "{1} wish {0} have a {2} day".format("you", "I", "nice")
+    c = "my name is {NAME}".format(NAME = "Veoneer")
+
+Python也支持另一种%形式的字符串格式化，Python3中不推荐这个写法，我们只做了解：
+::
+
+    d = "my name is %s" % "Veoneer"
+
+对于format的高阶用法，请参考 `格式规格迷你语言 <https://docs.python.org/zh-cn/3/library/string.html#formatspec>`_。
+比如：
+::
+
+    e = "I am {0:d} or {0:b} years old".format(18)
+
+    ipaddr = [192, 168, 0, 1]
+    f = '{:02X}{:02X}{:02X}{:02X}'.format(*ipaddr)
+
+format除了是str的方法以外，它还是一个内置函数，请不要混淆。
+
+作为内置函数使用时：
+::
+
+    class mystr(str):
+    def __format__(self, format_spec):
+        return self.__str__().format(format_spec)
+
+    template = mystr("I love you, do you love me? {0:s}?")
+    format_spec = "what's up"
+    g = format(template, format_spec)
+
+在调用内置函数format(value, format_spec)时会转换成 type(value).__format__(value, format_spec)。
+__format__是用户自定义方法，可以对类定义自己的格式化方法。
+
+所以上面例子实际上相当于调用了str.format()。
 
 
 内置数据结构
@@ -488,6 +540,7 @@ lambada表达式
 作用域
 类及其实例
 类的特殊成员
+__new__
 __init__
 
 

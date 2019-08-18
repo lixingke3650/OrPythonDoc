@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'myPythonDoc'
+project = 'OrPythonDoc'
 copyright = '2019, Bin Han'
 author = 'Bin Han'
 
