@@ -1,9 +1,9 @@
-.. myPythonDoc documentation master file, created by
+.. OrPythonDoc documentation master file, created by
    sphinx-quickstart on Tue Jul 30 18:50:11 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to myPythonDoc's documentation!
+OrPythonDoc
 =======================================
 
 .. toctree::
