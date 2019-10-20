@@ -11,8 +11,6 @@
     :class: line-through
 
 
-
-
 1 Pyhton是当今最流行的编程语言
 ------------------------------
 
@@ -71,7 +69,7 @@ Guido von Rossum（吉多·范罗苏姆）, 1956年1月31日出生于荷兰Haarl
 
 
 2 Python语法
-------------
+--------------
 
 总的来说Python的语法与C语言比较接近。
 下文如无特别说明，都指Python3.
@@ -369,6 +367,7 @@ Python属于强类型语言，不支持(倾向于不支持)隐式转换。
 虽然变量被定义时不需指明类型，但程序员心里必须清楚变量所属类型。
 
 数据类型出错时通常会报TypeError，比如会提示字符串与浮点型不能直接相连，
+
 ::
 
     cm = 170.0
@@ -378,6 +377,7 @@ Python属于强类型语言，不支持(倾向于不支持)隐式转换。
         print(e)
 
 此时我们应该使用str将cm转换为字符串：
+
 ::
 
     print("height: " + str(cm))
@@ -633,6 +633,7 @@ Python内置了功能强大数据结构。
     print(mylist)
 
 下面用来简化复杂列表创建的方法，称为 **列表推导式** ：
+
 ::
 
     mylist = [x**2 for x in range(5)]
@@ -1158,19 +1159,232 @@ for循环的本质就是先通过iter()函数获取可迭代对象(Iterable)的�
 流程控制语句经常配合 **break**, **continue**, **pass** 语句。
 break和continue的使用方法与C语言一致。 pass语句表示什么也不做。
 
-- with as
-- yield & return
 
 
 2-7 函数和类
 ================
 
-- lambada表达式
-- 作用域
-- 类及其实例
-- 类的特殊成员
-- __new__
-- __init__
+函数
+~~~~
+
+我们可以将一段实现特定功能的代码打包封装，称之为函数。
+
+函数定义语法：
+
+    def 函数名(参数列表):
+        # 由零条到多条可执行语句组成的代码块
+        [return [返回值]]
+
+我们以一个例子说明函数的基本用法:
+
+.. code-block:: python
+    :caption: foo
+    :name: foo
+    :emphasize-lines: 1
+    :linenos:
+
+    # 函数必须先定义才能使用
+    foo(1,2,3) # 此条语句会报错 NameError: name 'foo' is not defined.
+
+    def foo(p1, p2, p3='default'):
+        '''
+        This is a example for function.
+        '''
+
+        print("foo:", p1, p2, p3)
+
+        def subfoo():
+            print("hi subfoo.")
+
+        return subfoo
+
+    # 打印说明文档
+    print(foo.__doc__) # help(foo)
+    # 打印所有属性
+    print(dir(foo))
+
+    # 调用参数，省略默认参数
+    foo(1,2)
+    # 通过关键字制定参数
+    foo(p2=2,p1=3,p3=5)
+
+    # 函数赋值
+    renamefoo = foo
+    renamefoo('a', 'b')
+
+    # 嵌套函数
+    renamesubfoo = foo(1,2)
+    renamesubfoo()
+
+    # 函数被赋值后的作用域
+    del foo
+    foo(1,2) # 此条语句会报错 NameError: name 'foo' is not defined.
+    renamefoo(1,2)
+    renamesubfoo()
+
+
+列一下与C语言函数的区别，帮助大家有效记忆：
+
+- 由特定的关键字 **def** 来定义
+- 可接受关键字参数，参数顺序可调整，关键在参数必须在位置参数后面
+- 可接受默认参数，默认参数在定义式中必须放到位置参数后面
+- 定义语句不需要声明返回值，只需通过return指定即可，可同时返回多个值
+- 函数内部可以再定义函数，其内函数作用域被限制在外层函数之中
+- 函数也是一个对象，具有自己的属性，说明文档就是属性之一(__doc__)
+
+lambada表达式
+~~~~~~~~~~~~~
+
+一种对简单函数省却定义直接使用的语法形式。可以简化代码。
+暂不介绍。
+
+类及其实例
+~~~~~~~~~~
+
+在Python的世界里，一切皆为对象。这里所说的对象，就是类的实例。
+
+换句话说，类是整个Python的结构基础。
+
+几个术语：
+
+类::
+
+    一个抽象定义，包含了某一客观对象的众多特性。我们可以把它理解为一个模版。
+
+实例::
+
+     对类的具象化，它不再是一个框架或模版，而是被赋予了具体内容。
+     类与实例就好比 “马” 与 “这匹白马” 。
+
+对象::
+
+    从我的角度来看，对象是一个模糊的概念，通常情况下我们可以理解它为上述所说的实例。
+    但某些语境下它也可以指类本身或实例本事。
+
+方法::
+
+    类中定义的函数，我们称之为方法。
+
+属性::
+
+    类中定义的变量，我们称之为属性。
+
+
+类的定义语法：
+
+    class 类名：
+        零个到多个类属性...
+        零个到多个类方法...
+
+我们提到过，Python解释器会从上到下逐条语句解释并运行。
+但对于类是整体读入后在解释的，也就是各个成员间可以相互调用而不需要考虑定义的先后顺序。
+
+我们同样以一个例子来了解类的基本用法。
+下面例子中包含了父类，子类，继承，函数装饰器，类方法，静态方法，实例方法，类属性，实例属性等概念。
+
+.. code-block:: python
+    :caption: class
+    :name: class
+    :emphasize-lines: 0
+    :linenos:
+
+    # 继承自基类object。实际上所有类默认继承自object，即class MyClass()与之等价。
+    class MyClass(object):
+        """ docstring for MyClass
+
+            This is a class for company.
+        """
+
+        # 类的构造函数，负责创建类，属于类方法
+        # 在新建实例时被自行调用。第一个参数为父类，由解释器自动传入，后续参数即为定义时需要指定的参数
+        # 第一个参数cls为类本身。
+        # 请不要忘记返回一个实例
+        def __new__(cls, name):
+            instance = super(MyClass, cls).__new__(cls)
+            instance.addNum()
+            return instance
+
+        # 类的初始化函数，负责初始化类，属于对象方法
+        # 在新建实例时被自行调用。第一个参数为__new__返回的实例，后续参数即为定义时需要指定的参数
+        # 第一个参数self用来表示实例本身，是所有实例方法在声明时必须携带的参数，且必须排在第一位，但调用时不需指定。
+        def __init__(self, name):
+            super(MyClass, self).__init__() # 调用父类的初始化函数
+            self.name = name # name为self的实例属性，该语句将参数name赋值给实例属性
+
+        # 类属性，注意区别于实例属性
+        _README = "Thsi is a class for company."
+        _NUM = 0
+
+        # 类的方法，用于获取实例属性 self.name
+        def getName(self):
+            return self.name
+
+        # 类的方法，用于设置实例属性 self.name
+        def setName(self, name):
+            self.name = name
+
+        # @property为一种装饰器，将方法装饰成属性
+        @property
+        def CNAME(self):
+            return self.name.upper()
+
+        # 通过classmethod装饰器指定为类方法，该方法可直接由类调用，而不需要通过实例，与此相对的是实例方法
+        # 第一个参数为类对象
+        @classmethod
+        def addNum(cls):
+            cls._NUM += 1
+
+        @classmethod
+        def getNum(cls):
+            return cls._NUM
+
+        # 通过staticmethod装饰器指定为静态方法，不强制接收与类或实例相关的参数
+        @staticmethod
+        def UPPER(a):
+            return a.upper()
+
+
+    # 定义实例
+    company = MyClass("autoliv") # 自行调用了 类的__init__方法来初始化类
+    print(company.getName())
+    # 调用实例方法
+    company.setName("veoneer")
+    print(company.getName())
+    # 调用property装饰器装饰后的方法
+    print(company.CNAME)
+
+    # 直接对实例属性赋值
+    company.name = "new veoneer"
+    print(company.name)
+    print(company.getName())
+
+    # 新定义实例
+    company1 = MyClass("autoliv")
+    company2 = MyClass("veoneer")
+
+    # 通过类的静态方法获取当前共有几个实例
+    print(MyClass.getNum())
+
+    # 删除实例
+    del(company1)
+    print(MyClass.getNum())
+
+    # 类的继承
+    class SubClass(MyClass):
+        # 定义一个空类，实际上集成了父类所有属性方法
+        pass
+
+    # 定义子类的实例
+    subcompany = SubClass("mycompany")
+    print(subcompany.getName())
+
+    print(MyClass.getNum())
+    print(SubClass.getNum())
+
+    # 调用类的静态方法
+    print(MyClass.UPPER("abcdef"))
+
+
 
 
 2-8 包及导入
@@ -1211,6 +1425,95 @@ break和continue的使用方法与C语言一致。 pass语句表示什么也不�
 
 2-14 生成器/迭代器/可迭代对象
 ===============================
+
+迭代器 Iterator
+~~~~~~~~~~~~~~~~~
+
+抛开咬文嚼字，迭代通俗来说就是循环。
+
+看一个简单的生成列表的例子：
+
+::
+
+    mylist = [x*y for x in range(1,3) for y in range(4,6)]
+
+
+** x*y for x in range(1,3) for y in range(4,6) ** 为列表推到式。
+它生成了一个存在于内存中的列表mylist。
+
+我们把这种能够生成一系列数据的对象称之为迭代器。
+
+从实现角度来说，具有__iter__和__next__方法的对象都可以称为迭代器。
+
+迭代器是通过内建函数 __next__() 来不断提供下一个成员的。
+
+::
+
+    mygenerator = (x*y for x in range(1,3) for y in range(4,6))
+    print(mygenerator)
+    print(mygenerator.__iter__())
+    print(next(mygenerator)) # 等价于print(mygenerator.__next__())
+    print(next(mygenerator))
+    print(next(mygenerator))
+    print(next(mygenerator))
+    print(next(mygenerator)) # 当下一个元素为空时，会引发异常(StopIteration)
+
+
+生成器 generator
+~~~~~~~~~~~~~~~~~~
+
+生成器属于迭代器的一种，一般意义上生成器是含有yield语句的函数。
+
+::
+
+    # 定义函数
+    def func():
+        i = 1
+        while (i<=10):
+            i = i + 1
+        return i
+
+    # 定义一个生成器
+    def funcgen():
+        i = 1
+        while (i<=10):
+            yield i
+            i = i + 1
+        return i
+
+    # 类型
+    print(type(func))
+    # 函数调用
+    print(func())
+    print(func())
+
+    # 类型
+    print(type(funcgen))
+    # ??
+    print(funcgen())
+
+    # 下列实际上是使用了多个不同的生成器
+    print(next(funcgen()))
+    print(next(funcgen()))
+    print(next(funcgen()))
+
+    # 定义了一个生成器
+    mygen = funcgen()
+    print(next(mygen))
+    print(next(mygen))
+    print(next(mygen))
+
+可迭代对象 Iterable
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+可使用iter函数获取迭代器的对象称为可迭代对象，比如列表，字典等。
+
+::
+
+    mylist = [1, 3, 5, 7]
+
+    print(type(mylist))
+    print(type(iter(mylist)))
 
 
 2-15 装饰器@
