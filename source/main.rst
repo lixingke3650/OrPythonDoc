@@ -1223,10 +1223,10 @@ break和continue的使用方法与C语言一致。 pass语句表示什么也不�
     renamesubfoo()
 
 
-列一下与C语言函数的区别，帮助大家有效记忆：
+列一下与C语言函数的区别，帮助大家记忆：
 
 - 由特定的关键字 **def** 来定义
-- 可接受关键字参数，参数顺序可调整，关键在参数必须在位置参数后面
+- 可接受关键字参数，参数顺序可调整，关键字参数必须在位置参数后面
 - 可接受默认参数，默认参数在定义式中必须放到位置参数后面
 - 定义语句不需要声明返回值，只需通过return指定即可，可同时返回多个值
 - 函数内部可以再定义函数，其内函数作用域被限制在外层函数之中
@@ -1272,8 +1272,9 @@ lambada表达式
 
 类的定义语法：
 
-    class 类名：
+    class 类名([父类])：
         零个到多个类属性...
+
         零个到多个类方法...
 
 我们提到过，Python解释器会从上到下逐条语句解释并运行。
@@ -1301,7 +1302,7 @@ lambada表达式
         # 请不要忘记返回一个实例
         def __new__(cls, name):
             instance = super(MyClass, cls).__new__(cls)
-            instance.addNum()
+            cls.addNum()
             return instance
 
         # 类的初始化函数，负责初始化类，属于对象方法
@@ -1479,7 +1480,7 @@ lambada表达式
         while (i<=10):
             yield i
             i = i + 1
-        return i
+        # return i # return语句由yield替换
 
     # 类型
     print(type(func))
